@@ -91,3 +91,50 @@ int Dollar::getAmount()
 amount *= time;
 ```
 -----
+
+Теперь, предположим, что нам нужно возвращать каждый раз новые объект `Dollar` при умножение валют. То есть наш тест будет выглядеть следующим образом:
+
+```cpp
+TEST(DollarTest, ReturnNewObject)
+{
+	Dollar* dollar = new Dollar{ 5 };
+	Dollar* product = dollar->times(2);
+	EXPECT_EQ(product->getAmount(), 10);
+	
+	Dollar* three_product = dollar->times(3);
+	EXPECT_EQ(three_product->getAmount(), 15);
+}
+```
+
+Чтобы данные тест работал, изменим метод `void times(int time)` на `Dollar* times(int time)`:
+
+```cpp
+Dollar* Dollar::times(int time)
+{
+	return null; //Заглушка
+}
+```
+
+Тест запускается, но не проходит.
+
+Изменим на код на следующее:
+
+```cpp
+Dollar* Dollar::times(int time)
+{
+	return new Dollar(amount * time);
+}
+```
+Тест проходит, но не забываем про первый написанный нами тест, который тоже стоит исправить:
+
+```cpp
+TEST(DollarTest, Multiply)
+{
+	Dollar* dollar = new Dollar{ 5 };
+	dollar = dollar->times(2);
+	EXPECT_EQ(dollar->getAmount(), 10);
+}
+
+```
+
+Следующий шаг -- рефакторинг, но поскольку задача на этот раз была простой, данный шаг можно пропустить. Но всегда желательно приводить код в опрятный вид.
